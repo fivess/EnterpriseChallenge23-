@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  app:
+    image: joutavm/anademoura:back
+    environment:
+        - DB_URL=db
+        - DB_PORT=5432
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+  front:
+    image: joutavm/anademoura:front
+    ports:
+      - '3000:3000'
+    depends_on:
+      - app
+      - db
+
+volumes:
+  db:
+    driver: local
